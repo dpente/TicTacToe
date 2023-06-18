@@ -8,11 +8,14 @@ public class GameController : MonoBehaviour
     public Text[] buttonList;
     public GameObject gameOverPanel;
     public Text gameOverText;
+    public GameObject restartButton;
+
     private string playerSide;
     private int moveCount;
 
     private void Awake()
     {
+        restartButton.SetActive(false);
         gameOverPanel.SetActive(false);
         SetGameControllerRefOnButtons();
         playerSide = "X";
@@ -45,12 +48,12 @@ public class GameController : MonoBehaviour
            (buttonList[0].text == playerSide && buttonList[4].text == playerSide && buttonList[8].text == playerSide) ||
            (buttonList[2].text == playerSide && buttonList[4].text == playerSide && buttonList[6].text == playerSide))
         {
-            gameOver();
+            gameOver(playerSide);
         }
 
         if(moveCount >= 9)
         {
-            setGameOverText("Draw!");
+            gameOver("draw");
         }
         changeSides();
     }
@@ -60,20 +63,46 @@ public class GameController : MonoBehaviour
         playerSide = (playerSide == "X") ? "O" : "X";
     }
 
-    private void gameOver()
+    private void gameOver(string winner)
     {
-        
-        for(int i =0; i < buttonList.Length; i++)
+        setBoardInteractable(false); 
+
+        if(winner == "draw")
         {
-            buttonList[i].GetComponentInParent<Button>().interactable = false;
+            setGameOverText("Draw!");
         }
-        
-        setGameOverText(playerSide + " Wins!");
+        else{
+            setGameOverText(playerSide + " Wins!");
+        }
+          
+        restartButton.SetActive(true);
     }
 
     private void setGameOverText(string condition)
     {
         gameOverPanel.SetActive(true);
         gameOverText.text = condition;
+    }
+
+    public void RestartGame()
+    {
+        playerSide = "X";
+        moveCount = 0;
+        gameOverPanel.SetActive(false);
+        setBoardInteractable(true);
+        restartButton.SetActive(false);
+
+        for(int i =0; i < buttonList.Length; i++)
+        {
+            buttonList[i].text = "";
+        }
+    }
+
+    private void setBoardInteractable(bool toggle)
+    {
+        for(int i =0; i < buttonList.Length; i++)
+        {
+            buttonList[i].GetComponentInParent<Button>().interactable = toggle;
+        }
     }
 }
