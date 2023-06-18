@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public Text[] buttonList;
+    private string playerSide;
 
-    void Awake()
+    private void Awake()
     {
         SetGameControllerRefOnButtons();
+        playerSide = "X";
     }
 
-    void SetGameControllerRefOnButtons()
+    private void SetGameControllerRefOnButtons()
     {
         for(int i =0; i < buttonList.Length; i++)
         {
@@ -22,11 +24,36 @@ public class GameController : MonoBehaviour
 
     public string GetPlayerSide()
     {
-        return "?";
+        return playerSide;
     }
 
     public void EndTurn()
     {
-        Debug.Log("End turn is not set up");
+        if((buttonList[0].text == playerSide && buttonList[1].text == playerSide && buttonList[2].text == playerSide) ||
+           (buttonList[3].text == playerSide && buttonList[4].text == playerSide && buttonList[5].text == playerSide) ||
+           (buttonList[6].text == playerSide && buttonList[7].text == playerSide && buttonList[8].text == playerSide) ||
+           (buttonList[0].text == playerSide && buttonList[3].text == playerSide && buttonList[6].text == playerSide) ||
+           (buttonList[1].text == playerSide && buttonList[4].text == playerSide && buttonList[7].text == playerSide) ||
+           (buttonList[2].text == playerSide && buttonList[5].text == playerSide && buttonList[8].text == playerSide) ||
+           (buttonList[0].text == playerSide && buttonList[4].text == playerSide && buttonList[8].text == playerSide) ||
+           (buttonList[2].text == playerSide && buttonList[4].text == playerSide && buttonList[6].text == playerSide))
+        {
+            gameOver();
+        }
+
+        changeSides();
+    }
+
+    private void changeSides()
+    {
+        playerSide = (playerSide == "X") ? "O" : "X";
+    }
+
+    private void gameOver()
+    {
+        for(int i =0; i < buttonList.Length; i++)
+        {
+            buttonList[i].GetComponentInParent<Button>().interactable = false;
+        }
     }
 }
