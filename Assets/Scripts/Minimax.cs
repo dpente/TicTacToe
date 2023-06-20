@@ -22,7 +22,7 @@ public class Minimax : MonoBehaviour
         get { return instance; }
     }
 
-    private GridSpace move;
+    private int move;
 
     private void Awake()
     {
@@ -36,14 +36,9 @@ public class Minimax : MonoBehaviour
         }          
     }
 
-    private void start()
-    {
-        controller = GameController.Instance;
-        move = GridSpace.Instance;
-    }
-
     public void BestMove()
     {
+        controller = GameController.Instance;
         int bestScore = -0;
         int score;
         for(int i = 0; i < controller.buttonList.Length; i++)
@@ -51,16 +46,17 @@ public class Minimax : MonoBehaviour
             if(controller.buttonList[i].text == "")
             {
                 controller.buttonList[i].text = ai;
-                score = MiniMax(controller.buttonList[i], depth, false);
+                score = MiniMax(controller.buttonList[i], 0, false);
                 controller.buttonList[i].text = "";
                 if (score > bestScore)
                 {
                     bestScore = score;
-                    move = controller.buttonList[i].GetComponentInParent<GridSpace>();
+                    move = i;
                 }
             }
         }
-        move.buttonText.text = ai;
+        controller.buttonList[move].text = ai;
+        controller.changeSides();
     }
 
     private int MiniMax(Text place, int depth, bool isMaximizing)
