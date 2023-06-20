@@ -10,16 +10,46 @@ public class GameController : MonoBehaviour
     public Text gameOverText;
     public GameObject restartButton;
 
-    private string playerSide;
+    private static GameController instance;    
+    public static GameController Instance
+    {
+        get { return instance; }
+    }
+
+    private Minimax ai;
+
+    public string winner;
+    public string playerSide;
     private int moveCount;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }                
+        else if (instance != this)
+        {
+            Destroy(this); 
+        }        
         restartButton.SetActive(false);
         gameOverPanel.SetActive(false);
         SetGameControllerRefOnButtons();
         playerSide = "X";
         moveCount = 0;
+    }
+
+    private void Start()
+    {
+        ai = Minimax.Instance;
+    }
+
+    private void Update()
+    {
+        if(playerSide == "O")
+        {
+            ai.BestMove();
+        }
     }
 
     private void SetGameControllerRefOnButtons()
@@ -48,17 +78,20 @@ public class GameController : MonoBehaviour
            (buttonList[0].text == playerSide && buttonList[4].text == playerSide && buttonList[8].text == playerSide) ||
            (buttonList[2].text == playerSide && buttonList[4].text == playerSide && buttonList[6].text == playerSide))
         {
-            gameOver(playerSide);
+            winner = playerSide;
+            gameOver(winner);
         }
 
         if(moveCount >= 9)
         {
-            gameOver("draw");
+            winner = "draw";
+            gameOver(winner);
         }
+        winner = "";
         changeSides();
     }
 
-    private void changeSides()
+    public void changeSides()
     {
         playerSide = (playerSide == "X") ? "O" : "X";
     }
