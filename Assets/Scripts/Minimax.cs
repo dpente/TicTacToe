@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public enum Scores{
-    O=10,
-    X=-10,
-    DRAW=0
+    O= 10,
+    X= -10,
+    DRAW= 0
 }
 
 public class Minimax : MonoBehaviour
@@ -22,8 +22,6 @@ public class Minimax : MonoBehaviour
         get { return instance; }
     }
 
-    private int move;
-
     private void Awake()
     {
         if (instance == null)        
@@ -36,17 +34,18 @@ public class Minimax : MonoBehaviour
         }          
     }
 
-    public void BestMove()
+    public int BestMove()
     {
         controller = GameController.Instance;
-        int bestScore = -0;
-        int score;
+        int bestScore = int.MinValue;
+        int move = 0;
         for(int i = 0; i < controller.buttonList.Length; i++)
         {
             if(controller.buttonList[i].text == "")
             {
                 controller.buttonList[i].text = ai;
-                score = MiniMax(controller.buttonList[i], 0, false);
+                int score = MiniMax(controller.buttonList, 0, false);
+                Debug.Log(score);
                 controller.buttonList[i].text = "";
                 if (score > bestScore)
                 {
@@ -55,14 +54,14 @@ public class Minimax : MonoBehaviour
                 }
             }
         }
-        controller.buttonList[move].text = ai;
-        controller.changeSides();
+        return move;
     }
 
-    private int MiniMax(Text place, int depth, bool isMaximizing)
+    private int MiniMax(Text[] place, int depth, bool isMaximizing)
     {   
         string result = controller.winner;
-        int score;
+        int score = depth;
+
         if(result !=""){
             switch(result)
             {
@@ -74,7 +73,7 @@ public class Minimax : MonoBehaviour
                 score = (int)Scores.O;
                 break;
 
-                default:
+                case "draw":
                 score = (int)Scores.DRAW;
                 break;
             }
@@ -83,35 +82,29 @@ public class Minimax : MonoBehaviour
 
         if(isMaximizing)
         {
-            int bestScore = -0;
+            int bestScore = int.MinValue;
             for(int i = 0; i < controller.buttonList.Length; i++)
             {
-                if(controller.buttonList[i].text == "")
+                if(place[i].text == "")
                 {
                     controller.buttonList[i].text = ai;
-                    score = MiniMax(controller.buttonList[i], depth +1, false);
+                    score = MiniMax(place, depth +1, false);
                     controller.buttonList[i].text = "";
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                    }
+                    bestScore = Mathf.Max(score, bestScore);
                 }
             }
             return bestScore;
         }
         else{
-            int bestScore = 0;
+            int bestScore = int.MaxValue;
             for(int i = 0; i < controller.buttonList.Length; i++)
             {
-                if(controller.buttonList[i].text == "")
+                if(place[i].text == "")
                 {
                     controller.buttonList[i].text = player;
-                    score = MiniMax(controller.buttonList[i], depth +1, true);
+                    score = MiniMax(place, depth +1, true);
                     controller.buttonList[i].text = "";
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                    }
+                    bestScore = Mathf.Min(score, bestScore);
                 }
             }
             return bestScore;

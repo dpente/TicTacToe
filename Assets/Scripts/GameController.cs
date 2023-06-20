@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
     public string playerSide;
     private int moveCount;
 
+    public int aiMove;
+
     private void Awake()
     {
         if (instance == null)
@@ -35,23 +37,27 @@ public class GameController : MonoBehaviour
         restartButton.SetActive(false);
         gameOverPanel.SetActive(false);
         SetGameControllerRefOnButtons();
-        playerSide = "X";
+        playerSide = "O";
         moveCount = 0;
-    }
-
-    private void Start()
-    {
-        ai = Minimax.Instance;
+        winner = "";
     }
 
     private void Update()
     {
+        ai = Minimax.Instance;
         if(playerSide == "O")
         {
-            ai.BestMove();
+            aiTurn();
         }
     }
 
+    private void aiTurn()
+    {
+        aiMove = ai.BestMove();
+        buttonList[aiMove].text = playerSide;
+        buttonList[aiMove].GetComponentInParent<GridSpace>().button.interactable=false;
+        EndTurn();
+    }
     private void SetGameControllerRefOnButtons()
     {
         for(int i =0; i < buttonList.Length; i++)
@@ -87,7 +93,6 @@ public class GameController : MonoBehaviour
             winner = "draw";
             gameOver(winner);
         }
-        winner = "";
         changeSides();
     }
 
