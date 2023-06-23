@@ -1,3 +1,4 @@
+//The minimax algorithim that does not work 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -60,8 +61,7 @@ public class Minimax : MonoBehaviour
     private int MiniMax(Text[] place, int depth, bool isMaximizing)
     {   
         string result = controller.winner;
-        int score = depth;
-
+        int score = 0;
         if(result !=""){
             switch(result)
             {

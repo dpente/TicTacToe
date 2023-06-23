@@ -1,3 +1,4 @@
+//This script runs the game, checks for wins and calls the ai to play.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

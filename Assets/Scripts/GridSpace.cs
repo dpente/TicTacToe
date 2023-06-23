@@ -1,3 +1,4 @@
+//This script is called when a button is pushed, asigning the value to the playerSide
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
